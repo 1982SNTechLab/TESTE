@@ -1,144 +1,514 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SN Tech Lab - Em Breve</title>
+    <title>Calendário Corporativo - LAB S.L.</title>
     <style>
-        /* Cores extraídas do seu logo */
         :root {
-            --azul-escuro: #1b4292; /* Azul SN */
-            --azul-claro: #00acee;  /* Ciano SN */
-            --branco-gelo: #f8fafc;
+            --primary-red: #E31C24;
+            --primary-blue: #1E2D7D;
+            --light-blue: #F0F4FA;
+            --bg-gray: #F8F9FA;
+            --text-dark: #333333;
+            --holiday-color: #FFF0F0;
+            --dayoff-color: #E6ECFF;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            /* Degradê usando as cores da marca */
-            background: linear-gradient(135deg, #0f172a 0%, #1b4292 100%);
-            color: #ffffff;
-            height: 100vh;
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            padding: 12px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            text-align: center;
+            justify-content: flex-start;
+            min-height: 100vh;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 3rem;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            max-width: 500px;
-            width: 90%;
+            width: 100%;
+            max-width: 700px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border-top: 6px solid var(--primary-red);
+            margin-bottom: 20px;
         }
 
-        .logo-img {
-            max-width: 250px;
-            height: auto;
-            margin-bottom: 1.5rem;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+        /* Topo / Seletor de Turnos */
+        .header-panel {
+            background: var(--light-blue);
+            padding: 16px;
+            border-bottom: 2px solid #E2E8F0;
         }
 
-        h1 {
-            font-size: 1.6rem;
-            letter-spacing: 1.5px;
-            margin-bottom: 1rem;
-            color: var(--azul-claro);
-        }
-
-        p.subtitle {
-            font-size: 1rem;
-            color: #cbd5e1;
-            margin-bottom: 2.5rem;
-            line-height: 1.5;
-        }
-
-        /* Botões */
-        .btn-group {
+        .select-group {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 6px;
+            width: 100%;
         }
 
-        .btn {
+        label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select {
+            padding: 12px;
+            border: 2px solid #CBD5E1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            background: white;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='%231E2D7D' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+
+        select:focus {
+            border-color: var(--primary-blue);
+        }
+
+        /* Painel de Destaque do Horário de Trabalho */
+        .work-info-box {
+            background: linear-gradient(135deg, var(--primary-blue), #131D53);
+            color: white;
+            padding: 14px;
+            border-radius: 10px;
+            margin-top: 12px;
+            box-shadow: 0 4px 12px rgba(30, 45, 125, 0.15);
+        }
+
+        .work-info-box h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .work-info-box p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            line-height: 1.3;
+        }
+
+        /* Navegação do Calendário */
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .calendar-nav h2 {
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .nav-btn {
+            background: white;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        /* Grid do Calendário */
+        .calendar-grid {
+            padding: 0 16px 16px 16px;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            font-weight: 700;
+            position: relative;
+            transition: transform 0.1s;
+        }
+
+        .day.empty {
+            background: transparent;
+            border: none;
+        }
+
+        .day .day-num {
+            font-size: 1.1rem;
+        }
+
+        /* Legendas internas discretas dos dias */
+        .day-status {
+            font-size: 0.55rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            position: absolute;
+            bottom: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        /* Estilos de Destaque Dinâmicos */
+        .day.folga {
+            background-color: var(--dayoff-color) !important;
+            border-color: #B3C6FF;
+            color: var(--primary-blue);
+        }
+        .day.folga .day-status {
+            color: var(--primary-blue);
+        }
+
+        .day.feriado {
+            background-color: var(--holiday-color) !important;
+            border-color: #FFA3A3;
+            color: var(--primary-red);
+        }
+        .day.feriado .day-status {
+            color: var(--primary-red);
+        }
+
+        /* Rodapé / Observações de Feriados */
+        .footer-obs {
+            background: #F1F5F9;
+            padding: 16px;
+            border-top: 1px solid #E2E8F0;
+        }
+
+        .footer-obs h4 {
+            color: var(--primary-red);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 14px 25px;
-            border-radius: 12px;
-            text-decoration: none;
+            gap: 6px;
+        }
+
+        .holiday-list {
+            list-style: none;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .holiday-item {
+            padding: 8px 12px;
+            background: white;
+            border-left: 4px solid var(--primary-red);
+            border-radius: 0 6px 6px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            line-height: 1.4;
+        }
+
+        .holiday-item span {
+            font-weight: bold;
+            color: var(--primary-red);
+        }
+
+        .city-tag {
+            font-size: 0.7rem;
+            background: #E2E8F0;
+            color: #475569;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
             font-weight: 600;
-            transition: all 0.3s ease;
-            font-size: 1rem;
+            display: inline-block;
         }
 
-        .btn-email {
-            background-color: var(--azul-claro);
-            color: #0f172a;
+        .city-tag.nacional {
+            background: #FEE2E2;
+            color: var(--primary-red);
         }
 
-        .btn-email:hover {
-            background-color: #7dd3fc;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 172, 238, 0.3);
+        /* Estilo da Assinatura no Rodapé da Página */
+        .page-footer {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #64748B;
+            font-weight: 600;
+            padding: 10px 0 20px 0;
+            width: 100%;
         }
 
-        .btn-phone {
-            background-color: transparent;
-            color: #ffffff;
-            border: 2px solid var(--azul-claro);
-        }
-
-        .btn-phone:hover {
-            background-color: rgba(0, 172, 238, 0.1);
-            transform: translateY(-3px);
-        }
-
-        span.icon {
-            margin-right: 12px;
-            font-size: 1.2rem;
-        }
-
-        footer {
-            margin-top: 2.5rem;
-            font-size: 0.75rem;
-            color: #94a3b8;
-            letter-spacing: 0.5px;
+        /* Ajustes finos para celulares muito pequenos */
+        @media(max-width: 380px) {
+            .day .day-num {
+                font-size: 0.95rem;
+            }
+            .day-status {
+                font-size: 0.5rem;
+                bottom: 2px;
+            }
+            .nav-btn {
+                padding: 4px 10px;
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <img src="logo.jpg" alt="SN Tech Lab Logo" class="logo-img">
-        
-        <h1>MAIS INFORMAÇÕES EM BREVE</h1>
-        <p class="subtitle">Estamos preparando um novo ambiente tecnológico para você.</p>
-        
-        <div class="btn-group">
-            <a href="mailto:sergiotechlab@gmail.com" class="btn btn-email">
-                <span class="icon">✉️</span> Enviar E-mail
-            </a>
-
-            <a href="https://wa.me/+5531988082406" class="btn btn-phone">
-                <span class="icon">📞</span> Chamar no WhatsApp
-            </a>
+<div class="container">
+    <div class="header-panel">
+        <div class="select-group">
+            <label for="turnoSelect">Selecione o Turno de Trabalho</label>
+            <select id="turnoSelect" onchange="selecionarTurno()">
+                <option value="turno1">Turno 7 às 17 (Seg a Sex)</option>
+                <option value="turno2">Turno 7 às 16 (Seg a Sáb)</option>
+                <option value="turno3">Turno 7 às 18 (Seg a Sex)</option>
+                <option value="turno4">Turno 7 às 11 (Seg a Sáb)</option>
+                <option value="turno5">Turno 7 às 13 (Seg a Sex)</option>
+            </select>
         </div>
-
-        <footer>
-            &copy; 2026 SN TECH LAB. Todos os direitos reservados.
-        </footer>
+        
+        <div class="work-info-box" id="workInfoBox"></div>
     </div>
+
+    <div class="calendar-nav">
+        <button class="nav-btn" onclick="changeMonth(-1)">◀ Voltar</button>
+        <h2 id="calendarTitle">Janeiro 2026</h2>
+        <button class="nav-btn" onclick="changeMonth(1)">Avançar ▶</button>
+    </div>
+
+    <div class="calendar-grid">
+        <div class="weekdays">
+            <div>Dom</div>
+            <div>Seg</div>
+            <div>Ter</div>
+            <div>Qua</div>
+            <div>Qui</div>
+            <div>Sex</div>
+            <div>Sáb</div>
+        </div>
+        <div class="days" id="calendarDays"></div>
+    </div>
+
+    <div class="footer-obs">
+        <h4>📢 Observações - Feriados do Mês</h4>
+        <ul class="holiday-list" id="holidayList"></ul>
+    </div>
+</div>
+
+<footer class="page-footer">
+    SnTechLab® 2026
+</footer>
+
+<script>
+    // Configurações de Turnos
+    const turnosConfig = {
+        turno1: { descricao: "Horário de 7 às 17 Segunda a sexta. Faz 01h12 de Refeição.", folgas: [0, 6] },
+        turno2: { descricao: "Horário de 7 às 16 segunda a sexta, sábado de 7 às 11h00. Faz 01hr de Refeição.", folgas: [0] },
+        turno3: { descricao: "Horário de 7 às 18 segunda a sexta. Faz 02hrs de Refeição.", folgas: [0, 6] },
+        turno4: { descricao: "Horário de 7 às 11 segunda a sábado. Sem expediente estendido.", folgas: [0] },
+        turno5: { descricao: "Horário de 7 às 13 segunda a sexta.", folgas: [0, 6] }
+    };
+
+    // Banco de Dados Unificado de Feriados
+    const feriadosFixos = {
+        nacionais: {
+            "01-01": "Confraternização Universal",
+            "04-21": "Tiradentes",
+            "05-01": "Dia do Trabalho",
+            "09-07": "Independência do Brasil",
+            "10-12": "Nossa Sra. Aparecida",
+            "11-02": "Finados",
+            "11-15": "Proclamação da República",
+            "11-20": "Dia de Zumbi e da Consciência Negra",
+            "12-25": "Natal"
+        },
+        municipais: {
+            "Ipatinga": { "04-29": "Aniversário de Ipatinga", "08-15": "Dia de Nossa Senhora da Assunção" },
+            "Santana do Paraiso": { "04-28": "Aniversário de Santana do Paraíso", "07-26": "Dia de Santana" },
+            "Coronel Fabriciano": { "01-20": "Aniversário de Coronel Fabriciano", "02-02": "Dia de Nossa Senhora da Copacabana" },
+            "Timoteo": { "04-29": "Aniversário de Timóteo", "07-26": "Dia de São Sebastião (Padroeiro)" }
+        }
+    };
+
+    // Feriados móveis calculados para o ano de 2026
+    const feriadosMoveis2026 = {
+        "02-17": "Carnaval",
+        "04-03": "Sexta-feira Santa",
+        "06-04": "Corpus Christi"
+    };
+
+    let currentDate = new Date();
+    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
+    function changeMonth(direction) {
+        currentDate.setMonth(currentDate.getMonth() + direction);
+        renderCalendar();
+    }
+
+    // Nova função chamada ao alterar o select
+    function selecionarTurno() {
+        const turnoSelecionado = document.getElementById("turnoSelect").value;
+        localStorage.setItem("turnoSalvoLSL", turnoSelecionado); // Salva no navegador
+        renderCalendar();
+    }
+
+    function renderCalendar() {
+        const ano = currentDate.getFullYear();
+        const mes = currentDate.getMonth();
+
+        document.getElementById("calendarTitle").innerText = `${meses[mes]} ${ano}`;
+
+        const turnoSelecionado = document.getElementById("turnoSelect").value;
+        const configTurno = turnosConfig[turnoSelecionado];
+
+        // Atualiza painel superior de horários
+        document.getElementById("workInfoBox").innerHTML = `
+            <h3>${document.getElementById("turnoSelect").options[document.getElementById("turnoSelect").selectedIndex].text}</h3>
+            <p>${configTurno.descricao}</p>
+        `;
+
+        const primeiroDiaMes = new Date(ano, mes, 1).getDay();
+        const ultimoDiaMes = new Date(ano, mes + 1, 0).getDate();
+
+        const gridDias = document.getElementById("calendarDays");
+        gridDias.innerHTML = "";
+        
+        const listaFeriadosRodape = document.getElementById("holidayList");
+        listaFeriadosRodape.innerHTML = "";
+
+        // Dias vazios no início do mês
+        for (let i = 0; i < primeiroDiaMes; i++) {
+            const emptyDiv = document.createElement("div");
+            emptyDiv.classList.add("day", "empty");
+            gridDias.appendChild(emptyDiv);
+        }
+
+        let feriadosDoMesLista = [];
+
+        // Loop de construção dos dias do mês
+        for (let dia = 1; dia <= ultimoDiaMes; dia++) {
+            const dayDiv = document.createElement("div");
+            dayDiv.classList.add("day");
+
+            const mmdd = `${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+            const diaSemana = new Date(ano, mes, dia).getDay();
+
+            // Número centralizado
+            const numSpan = document.createElement("span");
+            numSpan.classList.add("day-num");
+            numSpan.innerText = dia;
+            dayDiv.appendChild(numSpan);
+
+            let temQualquerFeriado = false;
+
+            // 1. Checa se é Feriado Nacional (Fixo ou Móvel)
+            if (feriadosFixos.nacionais[mmdd] || (ano === 2026 && feriadosMoveis2026[mmdd])) {
+                const nomeF = feriadosFixos.nacionais[mmdd] || feriadosMoveis2026[mmdd];
+                temQualquerFeriado = true;
+                feriadosDoMesLista.push({ dia, nome: nomeF, tipo: "Nacional" });
+            }
+
+            // 2. Checa de forma abrangente todas as cidades para o dia atual
+            Object.keys(feriadosFixos.municipais).forEach(cidade => {
+                if (feriadosFixos.municipais[cidade][mmdd]) {
+                    temQualquerFeriado = true;
+                    feriadosDoMesLista.push({ dia, nome: feriadosFixos.municipais[cidade][mmdd], tipo: cidade });
+                }
+            });
+
+            // Aplica os estilos prioritários no quadradinho do calendário
+            const ehFolga = configTurno.folgas.includes(diaSemana);
+
+            if (temQualquerFeriado) {
+                dayDiv.classList.add("feriado");
+                const statusSpan = document.createElement("span");
+                statusSpan.classList.add("day-status");
+                statusSpan.innerText = "Feriado";
+                dayDiv.appendChild(statusSpan);
+            } else if (ehFolga) {
+                dayDiv.classList.add("folga");
+                const statusSpan = document.createElement("span");
+                statusSpan.classList.add("day-status");
+                statusSpan.innerText = "Folga";
+                dayDiv.appendChild(statusSpan);
+            }
+
+            gridDias.appendChild(dayDiv);
+        }
+
+        // Renderização da lista inteligente de observações no rodapé
+        if (feriadosDoMesLista.length === 0) {
+            listaFeriadosRodape.innerHTML = "<li style='font-style: italic; color:#777; text-align:center;'>Nenhum feriado nacional ou regional neste mês.</li>";
+        } else {
+            // Ordena os feriados por dia do mês
+            feriadosDoMesLista.sort((a, b) => a.dia - b.dia).forEach(f => {
+                const li = document.createElement("li");
+                li.classList.add("holiday-item");
+                
+                const tagClass = f.tipo === "Nacional" ? "city-tag nacional" : "city-tag";
+                
+                li.innerHTML = `
+                    <span>Dia ${String(f.dia).padStart(2, '0')}:</span> ${f.nome} 
+                    <span class="${tagClass}">${f.tipo}</span>
+                `;
+                listaFeriadosRodape.appendChild(li);
+            });
+        }
+    }
+
+    window.onload = function() {
+        // Recupera o turno salvo anteriormente, se houver
+        const turnoSalvo = localStorage.getItem("turnoSalvoLSL");
+        if (turnoSalvo && turnosConfig[turnoSalvo]) {
+            document.getElementById("turnoSelect").value = turnoSalvo;
+        }
+        renderCalendar();
+    };
+</script>
 
 </body>
 </html>
